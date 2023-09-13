@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CardsContainer : MonoBehaviour
 {
+    public static List<Transform> TransInitedCards = new List<Transform>();
     // Start is called before the first frame update
     void Start()
     {

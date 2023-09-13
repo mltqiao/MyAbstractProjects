@@ -21,13 +21,13 @@ public class MahjongNamesEditor : Editor
 
     private static void CreatMahjongNamesList()
     {
-        MahjongNames.Clear();
+        // MahjongNames.Clear();
         // 条 筒 万
         for (int i = 0; i < 4; i++)
         {
             for (int j = 1; j <= 9; j++)
             {
-                MahjongNames.Add(j + "Tiao " + i);
+                // MahjongNames.Add(j + "Tiao " + i);
                 MahjongNamesStringBuilder.Append(j + "Tiao" + i + " ");
             }
         }
@@ -35,7 +35,7 @@ public class MahjongNamesEditor : Editor
         {
             for (int j = 1; j <= 9; j++)
             {
-                MahjongNames.Add(j + "Tong " + i);
+                // MahjongNames.Add(j + "Tong " + i);
                 MahjongNamesStringBuilder.Append(j + "Tong" + i + " ");
             }
         }
@@ -43,7 +43,7 @@ public class MahjongNamesEditor : Editor
         {
             for (int j = 1; j <= 9; j++)
             {
-                MahjongNames.Add(j + "Wan " + i);
+                // MahjongNames.Add(j + "Wan " + i);
                 MahjongNamesStringBuilder.Append(j + "Wan" + i + " ");
             }
         }
@@ -51,49 +51,49 @@ public class MahjongNamesEditor : Editor
         // 中东南西北 白板 发
         for (int i = 0; i < 4; i++)
         {
-            MahjongNames.Add("Zhong " + i);
+            // MahjongNames.Add("Zhong " + i);
             MahjongNamesStringBuilder.Append("Zhong" + i + " ");
         }
         for (int i = 0; i < 4; i++)
         {
-            MahjongNames.Add("Dong " + i);
+            // MahjongNames.Add("Dong " + i);
             MahjongNamesStringBuilder.Append("Dong" + i + " ");
         }
         for (int i = 0; i < 4; i++)
         {
-            MahjongNames.Add("Nan " + i);
+            // MahjongNames.Add("Nan " + i);
             MahjongNamesStringBuilder.Append("Nan" + i + " ");
         }
         for (int i = 0; i < 4; i++)
         {
-            MahjongNames.Add("Xi " + i);
+            // MahjongNames.Add("Xi " + i);
             MahjongNamesStringBuilder.Append("Xi" + i + " ");
         }
         for (int i = 0; i < 4; i++)
         {
-            MahjongNames.Add("Bei " + i);
+            // MahjongNames.Add("Bei " + i);
             MahjongNamesStringBuilder.Append("Bei" + i + " ");
         }
         for (int i = 0; i < 4; i++)
         {
-            MahjongNames.Add("Baiban " + i);
+            // MahjongNames.Add("Baiban " + i);
             MahjongNamesStringBuilder.Append("Baiban" + i + " ");
         }
         for (int i = 0; i < 4; i++)
         {
-            MahjongNames.Add("Fa " + i);
+            // MahjongNames.Add("Fa " + i);
             MahjongNamesStringBuilder.Append("Fa" + i + " ");
         }
         
         // 春夏秋冬 梅兰竹菊
-        MahjongNames.Add("Chun");
-        MahjongNames.Add("Xia");
-        MahjongNames.Add("Qiu");
-        MahjongNames.Add("Dong");
-        MahjongNames.Add("Mei");
-        MahjongNames.Add("Lan");
-        MahjongNames.Add("Zhu");
-        MahjongNames.Add("Ju");
+        // MahjongNames.Add("Chun");
+        // MahjongNames.Add("Xia");
+        // MahjongNames.Add("Qiu");
+        // MahjongNames.Add("Dong");
+        // MahjongNames.Add("Mei");
+        // MahjongNames.Add("Lan");
+        // MahjongNames.Add("Zhu");
+        // MahjongNames.Add("Ju");
         MahjongNamesStringBuilder.Append("Chun" + " ");
         MahjongNamesStringBuilder.Append("Xia" + " ");
         MahjongNamesStringBuilder.Append("Qiu" + " ");

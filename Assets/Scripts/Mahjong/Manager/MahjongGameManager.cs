@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.ResourceManagement.ResourceProviders;
 
 public class MahjongGameManager : MonoBehaviour
 {
     private GameObject _objPrefab;
-    private Transform _transCards;
+    private Transform _transWashCards;
     // Start is called before the first frame update
     void Start()
     {
-        _transCards = GameObject.Find("Cards").transform;
+        _transWashCards = GameObject.Find("CardsContainer").transform.Find("WashCards");
         _objPrefab = Resources.Load<GameObject>("Mahjong/Prefabs/Card");
-        InitMatrixCards();
+        InitMatrixCards(144);
     }
 
     // Update is called once per frame
@@ -20,7 +22,7 @@ public class MahjongGameManager : MonoBehaviour
         
     }
 
-    private void InitMatrixCards()
+    private void InitMatrixCards(int initNum)
     {
         int counter = 0;
         // 144 Cards
@@ -30,10 +32,11 @@ public class MahjongGameManager : MonoBehaviour
             {
                 var position = new Vector3(x, 0, z);
                 var instantiation = Instantiate(_objPrefab, position, Quaternion.identity);
-                instantiation.transform.SetParent(_transCards);
+                instantiation.transform.SetParent(_transWashCards);
                 instantiation.name = MahjongNamesData.MahjongNames[counter];
+                CardsContainer.TransInitedCards.Add(instantiation.transform);
                 counter++;
-                if (counter >= 108)
+                if (counter >= initNum)
                 {
                     return;
                 }

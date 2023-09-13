@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.AddressableAssets.Build.BuildPipelineTasks;
 using UnityEngine;
 
 public class Hand : MonoBehaviour
@@ -9,7 +10,11 @@ public class Hand : MonoBehaviour
     private Vector3 _lastFramePos;
     private Vector3 _thisFramePos;
     public static Vector3 V3Speed;
-    public static bool MouseButtonDown;
+    public static bool MouseMixingButtonDown;
+    public BoxCollider mixingCollider;
+    public static bool MouseBuildingButtonDown;
+    public BoxCollider buildingCollider;
+    public Transform transWashCards;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,12 +24,21 @@ public class Hand : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MouseButtonDown = Input.GetMouseButton(0);
         _lastFramePos = _thisFramePos;
+        // 右键洗牌
+        MouseMixingButtonDown = Input.GetMouseButton(1);
+        if (mixingCollider.enabled != MouseMixingButtonDown)
+        {
+            mixingCollider.enabled = MouseMixingButtonDown;
+        }
+        // 左键码牌
+        MouseBuildingButtonDown = Input.GetMouseButton(0);
+        if (buildingCollider.enabled != MouseBuildingButtonDown)
+        {
+            buildingCollider.enabled = MouseBuildingButtonDown;
+        }
         FollowMousePosition();
-        _thisFramePos = transform.position;
         V3Speed = (_thisFramePos - _lastFramePos) / Time.deltaTime;
-        Debug.Log(V3Speed);
     }
 
     private void FollowMousePosition()
@@ -35,8 +49,8 @@ public class Hand : MonoBehaviour
         {
             Vector3 cameraToHitPoint = hit.point - Camera.main.transform.position;
             float t = -Camera.main.transform.position.y / cameraToHitPoint.y;
-            Vector3 intersectionPoint = Camera.main.transform.position + t * cameraToHitPoint;
-            intersectionPoint.y = 0f;
+            _thisFramePos = Camera.main.transform.position + t * cameraToHitPoint;
+            Vector3 intersectionPoint = new Vector3(_thisFramePos.x,0f,_thisFramePos.z);
             // 判断检测状态
             if (intersectionPoint.x < -125f || intersectionPoint.x > 125f)
             {
@@ -55,11 +69,7 @@ public class Hand : MonoBehaviour
                 _isCheckingZ = true;
             }
             // 根据检测状态给transform赋值
-            if (_isCheckingX && _isCheckingZ)
-            {
-                transform.position = Vector3.MoveTowards(transform.position,intersectionPoint,float.MaxValue);
-            }
-            else if (!_isCheckingX && _isCheckingZ)
+            if (!_isCheckingX && _isCheckingZ)
             {
                 if (intersectionPoint.x <= -125)
                 {
@@ -69,7 +79,6 @@ public class Hand : MonoBehaviour
                 {
                     intersectionPoint.x = 125f;
                 }
-                transform.position = Vector3.MoveTowards(transform.position,intersectionPoint,float.MaxValue);
             }
             else if (_isCheckingX && !_isCheckingZ)
             {
@@ -81,7 +90,6 @@ public class Hand : MonoBehaviour
                 {
                     intersectionPoint.z = 125f;
                 }
-                transform.position = Vector3.MoveTowards(transform.position,intersectionPoint,float.MaxValue);
             }
             else if (!_isCheckingX && !_isCheckingZ)
             {
@@ -101,7 +109,15 @@ public class Hand : MonoBehaviour
                 {
                     intersectionPoint.z = 125f;
                 }
-                transform.position = Vector3.MoveTowards(transform.position,intersectionPoint,float.MaxValue);
+            }
+            transform.position = Vector3.MoveTowards(transform.position,intersectionPoint,float.MaxValue);
+
+            if (V3Speed != Vector3.zero)
+            {
+                // Vector3 targetDirection = V3Speed.normalized;
+                // Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+                // transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360f*Time.deltaTime);
+                transform.forward = V3Speed.normalized;
             }
         }
     }

@@ -76,7 +76,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e4b4dae4f5c3e49af2f198d004b736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardCollider: {fileID: 455079144259881392}
   rig: {fileID: 3862806639226032601}
+  buildState: 0
+  v3BuildPos: {x: 0, y: 0, z: 0}
+  v3BuildRot: {x: 0, y: 0, z: 0}
 --- !u!1 &455079144767203881
 GameObject:
   m_ObjectHideFlags: 0

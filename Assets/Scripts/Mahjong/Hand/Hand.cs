@@ -11,10 +11,11 @@ public class Hand : MonoBehaviour
     private Vector3 _thisFramePos;
     public static Vector3 V3Speed;
     public static bool MouseMixingButtonDown;
-    public BoxCollider mixingCollider;
+    public BoxCollider mixingTrigger;
     public static bool MouseBuildingButtonDown;
     public BoxCollider buildingCollider;
-    public Transform transWashCards;
+    public static Vector3 IntersectionPosition;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -27,10 +28,6 @@ public class Hand : MonoBehaviour
         _lastFramePos = _thisFramePos;
         // 右键洗牌
         MouseMixingButtonDown = Input.GetMouseButton(1);
-        if (mixingCollider.enabled != MouseMixingButtonDown)
-        {
-            mixingCollider.enabled = MouseMixingButtonDown;
-        }
         // 左键码牌
         MouseBuildingButtonDown = Input.GetMouseButton(0);
         if (buildingCollider.enabled != MouseBuildingButtonDown)
@@ -39,6 +36,23 @@ public class Hand : MonoBehaviour
         }
         FollowMousePosition();
         V3Speed = (_thisFramePos - _lastFramePos) / Time.deltaTime;
+        // 限制一帧内的鼠标运动速度(没啥大用，后面取值都是取的Normalized值)
+        if (V3Speed.x >= 150f)
+        {
+            V3Speed = new Vector3(150f, 0, V3Speed.z);
+        }
+        else if (V3Speed.x <= -150f)
+        {
+            V3Speed = new Vector3(-150f, 0, V3Speed.z);
+        }
+        if (V3Speed.z >= 150f)
+        {
+            V3Speed = new Vector3(V3Speed.x, 0, 150f);
+        }
+        else if (V3Speed.z <= -150f)
+        {
+            V3Speed = new Vector3(V3Speed.x, 0, -150f);
+        }
     }
 
     private void FollowMousePosition()
@@ -50,9 +64,9 @@ public class Hand : MonoBehaviour
             Vector3 cameraToHitPoint = hit.point - Camera.main.transform.position;
             float t = -Camera.main.transform.position.y / cameraToHitPoint.y;
             _thisFramePos = Camera.main.transform.position + t * cameraToHitPoint;
-            Vector3 intersectionPoint = new Vector3(_thisFramePos.x,0f,_thisFramePos.z);
+            IntersectionPosition = new Vector3(_thisFramePos.x,0f,_thisFramePos.z);
             // 判断检测状态
-            if (intersectionPoint.x < -125f || intersectionPoint.x > 125f)
+            if (IntersectionPosition.x < -125f || IntersectionPosition.x > 125f)
             {
                 _isCheckingX = false;
             }
@@ -60,7 +74,7 @@ public class Hand : MonoBehaviour
             {
                 _isCheckingX = true;
             }
-            if (intersectionPoint.z < -125f || intersectionPoint.z > 125f)
+            if (IntersectionPosition.z < -125f || IntersectionPosition.z > 125f)
             {
                 _isCheckingZ = false;
             }
@@ -71,52 +85,49 @@ public class Hand : MonoBehaviour
             // 根据检测状态给transform赋值
             if (!_isCheckingX && _isCheckingZ)
             {
-                if (intersectionPoint.x <= -125)
+                if (IntersectionPosition.x <= -125)
                 {
-                    intersectionPoint.x = -125f;
+                    IntersectionPosition.x = -125f;
                 }
-                else if (intersectionPoint.x >= 125)
+                else if (IntersectionPosition.x >= 125)
                 {
-                    intersectionPoint.x = 125f;
+                    IntersectionPosition.x = 125f;
                 }
             }
             else if (_isCheckingX && !_isCheckingZ)
             {
-                if (intersectionPoint.z <= -125)
+                if (IntersectionPosition.z <= -125)
                 {
-                    intersectionPoint.z = -125f;
+                    IntersectionPosition.z = -125f;
                 }
-                else if (intersectionPoint.z >= 125)
+                else if (IntersectionPosition.z >= 125)
                 {
-                    intersectionPoint.z = 125f;
+                    IntersectionPosition.z = 125f;
                 }
             }
             else if (!_isCheckingX && !_isCheckingZ)
             {
-                if (intersectionPoint.x <= -125)
+                if (IntersectionPosition.x <= -125)
                 {
-                    intersectionPoint.x = -125f;
+                    IntersectionPosition.x = -125f;
                 }
-                else if (intersectionPoint.x >= 125)
+                else if (IntersectionPosition.x >= 125)
                 {
-                    intersectionPoint.x = 125f;
+                    IntersectionPosition.x = 125f;
                 }
-                if (intersectionPoint.z <= -125)
+                if (IntersectionPosition.z <= -125)
                 {
-                    intersectionPoint.z = -125f;
+                    IntersectionPosition.z = -125f;
                 }
-                else if (intersectionPoint.z >= 125)
+                else if (IntersectionPosition.z >= 125)
                 {
-                    intersectionPoint.z = 125f;
+                    IntersectionPosition.z = 125f;
                 }
             }
-            transform.position = Vector3.MoveTowards(transform.position,intersectionPoint,float.MaxValue);
+            transform.position = Vector3.MoveTowards(transform.position,IntersectionPosition,float.MaxValue);
 
             if (V3Speed != Vector3.zero)
             {
-                // Vector3 targetDirection = V3Speed.normalized;
-                // Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-                // transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 360f*Time.deltaTime);
                 transform.forward = V3Speed.normalized;
             }
         }

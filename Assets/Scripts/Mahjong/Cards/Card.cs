@@ -17,7 +17,6 @@ public class Card : MonoBehaviour
     private float _buildMoveSpeed;
     private float _maxMixCentripetalDistance;
     private float _minMixFollowingDistance;
-    
     // Start is called before the first frame update
     void Start()
     {
@@ -93,8 +92,26 @@ public class Card : MonoBehaviour
         else if (other.gameObject.layer == LayerMask.NameToLayer("Hand") && Hand.MouseBuildingButtonDown)
         {
             // 抵消下压力和自身重力
-            rig.AddForce(Vector3.up * 898.1f);
+            rig.AddForce(Vector3.up * 800f);
+            rig.useGravity = false;
+            // 整合拖拽方向
             Vector3 forceDirection = Hand.V3Speed.normalized;
+            if (Hand.V3Speed.z < 0 && Mathf.Abs(Hand.V3Speed.x) < -Hand.V3Speed.z)
+            {
+                forceDirection = Vector3.back;
+            }
+            else if (Hand.V3Speed.x < 0 && Mathf.Abs(Hand.V3Speed.z) < -Hand.V3Speed.x)
+            {
+                forceDirection = Vector3.left;
+            }
+            else if (Hand.V3Speed.z > 0 && Mathf.Abs(Hand.V3Speed.x) < Hand.V3Speed.z)
+            {
+                forceDirection = Vector3.forward;
+            }
+            else if (Hand.V3Speed.x > 0 && Mathf.Abs(Hand.V3Speed.z) < Hand.V3Speed.x)
+            {
+                forceDirection = Vector3.right;
+            }
             rig.AddForce(forceDirection * MahjongParameters.CardsBuildDragForce, ForceMode.Impulse);
         }
         // 松开时恢复重力
@@ -103,31 +120,31 @@ public class Card : MonoBehaviour
             rig.useGravity = true;
         }
     }
-
-    private void OnCollisionEnter(Collision other)
+    
+    private void OnCollisionStay(Collision other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Walls") && Hand.MouseBuildingButtonDown)
         {
             if (buildState == 0)
             {
                 Vector3 buildDirection = Hand.V3Speed.normalized;
-                // bottom build
-                if (buildDirection.z < 0 && Math.Abs(buildDirection.z) > Math.Abs(buildDirection.x))
+                // Bottom build
+                if (buildDirection.z < 0 && Math.Abs(buildDirection.x) < -buildDirection.z)
                 {
                     _cardsContainer.transWalls[0].BuildWall(this);
                 }
                 // Left build
-                else if (buildDirection.x < 0 && Math.Abs(buildDirection.x) > Math.Abs(buildDirection.z))
+                else if (buildDirection.x < 0 && Math.Abs(buildDirection.z) < -buildDirection.x)
                 {
                     _cardsContainer.transWalls[1].BuildWall(this);
                 }
                 // Top build
-                else if (buildDirection.z > 0 && Math.Abs(buildDirection.z) > Math.Abs(buildDirection.x))
+                else if (buildDirection.z > 0 && Math.Abs(buildDirection.x) < buildDirection.z)
                 {
                     _cardsContainer.transWalls[2].BuildWall(this);
                 }
                 // Right build
-                else if (buildDirection.x > 0 && Math.Abs(buildDirection.x) > Math.Abs(buildDirection.z))
+                else if (buildDirection.x > 0 && Math.Abs(buildDirection.z) < buildDirection.x)
                 {
                     _cardsContainer.transWalls[3].BuildWall(this);
                 }
@@ -135,7 +152,7 @@ public class Card : MonoBehaviour
         }
     }
     
-    IEnumerator MoveToBuildTransform()
+    private IEnumerator MoveToBuildTransform()
     {
         if (buildState == 2)
         {

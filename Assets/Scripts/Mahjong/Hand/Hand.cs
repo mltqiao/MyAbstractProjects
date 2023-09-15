@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.AddressableAssets.Build.BuildPipelineTasks;
@@ -9,9 +10,14 @@ public class Hand : MonoBehaviour
     private bool _isCheckingZ;
     private Vector3 _lastFramePos;
     private Vector3 _thisFramePos;
+
+    public bool triggerOrCollider;
+    private Rigidbody _rig;
+    private float _maxRotationSpeed;
     public static Vector3 V3Speed;
     public static bool MouseMixingButtonDown;
     public BoxCollider mixingTrigger;
+    public BoxCollider mixingCollider;
     public static bool MouseBuildingButtonDown;
     public BoxCollider buildingCollider;
     public static Vector3 IntersectionPosition;
@@ -19,7 +25,8 @@ public class Hand : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        _rig = GetComponent<Rigidbody>();
+        _maxRotationSpeed = MahjongParameters.HandMixMaxAngle;
     }
 
     // Update is called once per frame
@@ -53,6 +60,11 @@ public class Hand : MonoBehaviour
         {
             V3Speed = new Vector3(V3Speed.x, 0, -150f);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        FollowMousePositionPhysics();
     }
 
     private void FollowMousePosition()
@@ -124,11 +136,49 @@ public class Hand : MonoBehaviour
                     IntersectionPosition.z = 125f;
                 }
             }
-            transform.position = Vector3.MoveTowards(transform.position,IntersectionPosition,float.MaxValue);
 
-            if (V3Speed != Vector3.zero)
+            if (!triggerOrCollider)
             {
-                transform.forward = V3Speed.normalized;
+                if (!mixingTrigger.enabled)
+                {
+                    mixingTrigger.enabled = true;
+                }
+                if (mixingCollider.enabled)
+                {
+                    mixingCollider.enabled = false;
+                }
+                
+                transform.position = Vector3.MoveTowards(transform.position,IntersectionPosition,float.MaxValue);
+                
+                if (V3Speed != Vector3.zero)
+                {
+                    float step = _maxRotationSpeed * Time.fixedDeltaTime;
+                    Quaternion targetRotation = Quaternion.LookRotation(V3Speed.normalized);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation.normalized,step);
+                }
+            }
+        }
+    }
+
+    private void FollowMousePositionPhysics()
+    {
+        if (MouseMixingButtonDown)
+        {
+            if (triggerOrCollider)
+            {
+                if (mixingTrigger.enabled)
+                {
+                    mixingTrigger.enabled = false;
+                }
+                if (!mixingCollider.enabled)
+                {
+                    mixingCollider.enabled = true;
+                }
+                Vector3 direction = IntersectionPosition - transform.position;
+                Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
+                float step = _maxRotationSpeed * Time.fixedDeltaTime;
+                _rig.MoveRotation(Quaternion.RotateTowards(_rig.rotation, targetRotation, step));
+                _rig.MovePosition(IntersectionPosition);
             }
         }
     }

@@ -921,6 +921,7 @@ MonoBehaviour:
   - {fileID: 48341606}
   - {fileID: 1303508057}
   ifWallsBuilt: 00000000
+  ifWallsMoved: 00000000
 --- !u!1 &1303508055
 GameObject:
   m_ObjectHideFlags: 0
@@ -1259,6 +1260,7 @@ GameObject:
   - component: {fileID: 1988167172}
   - component: {fileID: 1988167175}
   - component: {fileID: 1988167176}
+  - component: {fileID: 1988167177}
   - component: {fileID: 1988167173}
   m_Layer: 7
   m_Name: Hand
@@ -1279,7 +1281,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a1a65a47c8651c4ba44dad3dcea6585, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerOrCollider: 0
   mixingTrigger: {fileID: 1988167176}
+  mixingCollider: {fileID: 1988167177}
   buildingCollider: {fileID: 1988167173}
 --- !u!65 &1988167173
 BoxCollider:
@@ -1336,6 +1340,19 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 700, y: 10, z: 700}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &1988167177
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988167171}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 50, y: 10, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2003138967
 GameObject:
@@ -1462,16 +1479,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardCount: 144
+  handMixMaxAngle: 200
   cardsMixDragForce: 5000
-  cardsMixCentripetalForce: 0.1
-  cardsMixCentripetalMaxDistance: 100
-  cardsMixFollowingForce: 0.1
+  cardsMixCentripetalForce: 0.5
+  cardsMixCentripetalMaxDistance: 50
+  cardsMixFollowingForce: 0.01
   cardsMixFollowingMinDistance: 150
   cardsBuildDragForce: 50
   cardsBuildMoveSpeed: 150
   cardsBuildRotationSpeed: 50
   cardsBuildHeight: 3.81924
   cardsBuildWeight: 6.18
+  builtWallMoveSpeed: 25
 --- !u!4 &2022184663
 Transform:
   m_ObjectHideFlags: 0

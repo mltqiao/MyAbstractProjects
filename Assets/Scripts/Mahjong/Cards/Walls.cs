@@ -9,6 +9,8 @@ public class Walls : MonoBehaviour
     private bool _canBuildHere;
     public Transform transStartBuildPos;
     public List<Vector3> v3RestBuildPos = new List<Vector3>();
+    private Vector3 _v3BuiltWallTargetPos;
+    private float _builtWallMoveSpeed;
     
     // Start is called before the first frame update
     void Start()
@@ -26,11 +28,13 @@ public class Walls : MonoBehaviour
     {
         _cardsContainer = GetComponentInParent<CardsContainer>();
         _wallNum = _cardsContainer.transWalls.IndexOf(this);
+        _builtWallMoveSpeed = MahjongParameters.BuiltWallMoveSpeed;
         int groupTimes = 0;
         switch (_wallNum)
         {
             // bottom wall
             case 0 :
+                _v3BuiltWallTargetPos = Vector3.back * 50f;
                 for (int i = 0; i < MahjongParameters.CardCount / 4; i++)
                 {
                     switch (i % 4)
@@ -65,6 +69,7 @@ public class Walls : MonoBehaviour
                 break;
             // left wall
             case 1 :
+                _v3BuiltWallTargetPos = Vector3.left * 50f;
                 for (int i = 0; i < MahjongParameters.CardCount / 4; i++)
                 {
                     switch (i % 4)
@@ -99,6 +104,7 @@ public class Walls : MonoBehaviour
                 break;
             // top wall
             case 2 :
+                _v3BuiltWallTargetPos = Vector3.forward * 50f;
                 for (int i = 0; i < MahjongParameters.CardCount / 4; i++)
                 {
                     switch (i % 4)
@@ -133,6 +139,7 @@ public class Walls : MonoBehaviour
                 break;
             // right wall
             case 3 :
+                _v3BuiltWallTargetPos = Vector3.right * 50f;
                 for (int i = 0; i < MahjongParameters.CardCount / 4; i++)
                 {
                     switch (i % 4)
@@ -182,12 +189,12 @@ public class Walls : MonoBehaviour
             v3RestBuildPos.RemoveAt(0);
             card.transform.SetParent(transform);
             card.buildState = 1;
-        }
-        
-        if (v3RestBuildPos.Count <= 0)
-        {
-            _canBuildHere = false;
-            _cardsContainer.ifWallsBuilt[_wallNum] = true;
+            // 检测是否能继续在此build
+            if (v3RestBuildPos.Count <= 0)
+            {
+                _canBuildHere = false;
+                _cardsContainer.ifWallsBuilt[_wallNum] = true;
+            }
         }
     }
 }

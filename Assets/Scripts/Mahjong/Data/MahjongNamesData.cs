@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MahjongNamesData : MonoBehaviour
 {
-    private string MahjongNamesString;
+    private string _mahjongNamesString;
     public static List<string> MahjongNames = new List<string>();
     private void OnEnable()
     {
@@ -29,12 +29,12 @@ public class MahjongNamesData : MonoBehaviour
         // json文件路径
         string mahjongJsonFilePath = Application.streamingAssetsPath + "/Mahjong/MahjongNamesData.json";
         // 获取json内容string
-        MahjongNamesString = System.IO.File.ReadAllText(mahjongJsonFilePath);
-        MahjongNamesString = MahjongNamesString.Trim('"');
+        _mahjongNamesString = System.IO.File.ReadAllText(mahjongJsonFilePath);
+        _mahjongNamesString = _mahjongNamesString.Trim('"');
         // 分隔string并存为List
-        foreach (var MahjongName in MahjongNamesString.Split(' '))
+        foreach (var _mahjongName in _mahjongNamesString.Split(' '))
         {
-            MahjongNames.Add(MahjongName);
+            MahjongNames.Add(_mahjongName);
         }
     }
 }
